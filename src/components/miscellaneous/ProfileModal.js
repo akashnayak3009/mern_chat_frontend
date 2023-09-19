@@ -30,14 +30,14 @@ const ProfileModal = ({ user, children }) => {
           <ModalHeader
             fontSize="40px"
             fontFamily="Work sans"
-            display="flex"
+            d="flex"
             justifyContent="center"
           >
             {user.name}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody
-            display="flex"
+            d="flex"
             flexDir="column"
             alignItems="center"
             justifyContent="space-between"

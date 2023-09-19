@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { ChatState } from "../Context/ChatProvider";
-import { useToast, Box, Button, Stack, Text } from "@chakra-ui/react";
-import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
+import { Box, Stack, Text } from "@chakra-ui/layout";
+import { useToast } from "@chakra-ui/toast";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { getSender } from "../config/ChatLogics.js";
 import ChatLoading from "./ChatLoading";
-import { getSender } from "../config/ChatLogics";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
+import { Button } from "@chakra-ui/react";
+import { ChatState } from "../Context/ChatProvider";
 
-const MyChats = ({ fetchAgain}) => {
-  const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
+const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
 
+  const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
+
   const toast = useToast();
+
   const fetchChats = async () => {
     // console.log(user._id);
     try {
@@ -22,11 +26,10 @@ const MyChats = ({ fetchAgain}) => {
       };
 
       const { data } = await axios.get("/api/chat", config);
-      console.log(data);
       setChats(data);
     } catch (error) {
       toast({
-        title: "Error Occured!",
+        title: "Error Occurred!",
         description: "Failed to Load the chats",
         status: "error",
         duration: 5000,
@@ -41,9 +44,10 @@ const MyChats = ({ fetchAgain}) => {
     fetchChats();
     // eslint-disable-next-line
   }, [fetchAgain]);
+
   return (
     <Box
-      display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+      d={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
       alignItems="center"
       p={3}
@@ -62,7 +66,7 @@ const MyChats = ({ fetchAgain}) => {
         justifyContent="space-between"
         alignItems="center"
       >
-        MyChats
+        My Chats
         <GroupChatModal>
           <Button
             d="flex"
@@ -73,9 +77,8 @@ const MyChats = ({ fetchAgain}) => {
           </Button>
         </GroupChatModal>
       </Box>
-
       <Box
-        display="flex"
+        d="flex"
         flexDir="column"
         p={3}
         bg="#F8F8F8"
@@ -102,6 +105,14 @@ const MyChats = ({ fetchAgain}) => {
                     ? getSender(loggedUser, chat.users)
                     : chat.chatName}
                 </Text>
+                {chat.latestMessage && (
+                  <Text fontSize="xs">
+                    <b>{chat.latestMessage.sender.name} : </b>
+                    {chat.latestMessage.content.length > 50
+                      ? chat.latestMessage.content.substring(0, 51) + "..."
+                      : chat.latestMessage.content}
+                  </Text>
+                )}
               </Box>
             ))}
           </Stack>
